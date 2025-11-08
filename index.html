@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cineworld - Registration</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/air-datepicker@3.3.5/air-datepicker.min.css">
+    <style>
+        :root {
+            /* Light theme colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-overlay: rgba(0, 0, 0, 0.5);
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-placeholder: #999999;
+            --accent-primary: #e50914;
+            --accent-secondary: #b81d24;
+            --border-color: #dddddd;
+            --border-focus: #e50914;
+            --error-color: #e50914;
+            --success-color: #2ecc71;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: 0.35s;
+        }
+
+        .theme-dark {
+            /* Dark theme colors */
+            --bg-primary: #141414;
+            --bg-secondary: #1f1f1f;
+            --bg-overlay: rgba(0, 0, 0, 0.7);
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-placeholder: #808080;
+            --accent-primary: #e50914;
+            --accent-secondary: #b81d24;
+            --border-color: #404040;
+            --border-focus: #e50914;
+            --error-color: #e50914;
+            --success-color: #2ecc71;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color var(--transition), color var(--transition), border-color var(--transition);
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            position: relative;
+        }
+
+        .page__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page__title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .theme-toggle__switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background-color: var(--border-color);
+            border-radius: 12px;
+            transition: background-color var(--transition);
+        }
+
+        .theme-toggle__switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--bg-primary);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform var(--transition);
+        }
+
+        .theme-toggle--active .theme-toggle__switch {
+            background-color: var(--accent-primary);
+        }
+
+        .theme-toggle--active .theme-toggle__switch::after {
+            transform: translateX(26px);
+        }
+
+        .theme-toggle__label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form__row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form__field {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form__label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form__label--required::after {
+            content: '*';
+            color: var(--error-color);
+            margin-left: 4px;
+        }
+
+        .input {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input__field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .input__field::placeholder {
+            color: var(--text-placeholder);
+        }
+
+        .input__field:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+        }
+
+        .input__field--error {
+            border-color: var(--error-color);
+        }
+
+        .input__field--error:focus {
+            box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+        }
+
+        .input__clear {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: none;
+            font-size: 18px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input--filled .input__clear {
+            display: flex;
+        }
+
+        .input__clear:hover {
+            color: var(--text-primary);
+        }
+
+        .form__error {
+            font-size: 12px;
+            color: var(--error-color);
+            display: none;
+        }
+
+        .form__field--error .form__error {
+            display: block;
+        }
+
+        .select {
+            position: relative;
+        }
+
+        .select__field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            appearance: none;
+            cursor: pointer;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .select__field:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+        }
+
+        .select__arrow {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-secondary);
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox__input {
+            display: none;
+        }
+
+        .checkbox__box {
+            width: 18px;
+            height: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: border-color var(--transition), background-color var(--transition);
+        }
+
+        .checkbox__input:checked + .checkbox__box {
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .checkbox__input:checked + .checkbox__box::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        .checkbox__label {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .checkbox__label--required::after {
+            content: '*';
+            color: var(--error-color);
+            margin-left: 4px;
+        }
+
+        .form__divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 10px 0;
+        }
+
+        .button {
+            padding: 14px 20px;
+            background-color: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition), transform 0.1s;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: var(--accent-secondary);
+        }
+
+        .button:active {
+            transform: scale(0.98);
+        }
+
+        .button:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 20px;
+            padding: 40px 20px;
+        }
+
+        .success__title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .success__message {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 300px;
+        }
+
+        .form--hidden {
+            display: none;
+        }
+
+        .success--visible {
+            display: flex;
+        }
+
+        .datepicker-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-overlay);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .datepicker-overlay--visible {
+            display: flex;
+        }
+
+        .datepicker-container {
+            position: relative;
+            z-index: 1001;
+        }
+
+        /* Datepicker customization */
+        .air-datepicker {
+            --adp-background-color: var(--bg-primary);
+            --adp-background-color-hover: var(--bg-secondary);
+            --adp-background-color-active: var(--accent-primary);
+            --adp-color: var(--text-primary);
+            --adp-color-secondary: var(--text-secondary);
+            --adp-accent-color: var(--accent-primary);
+            --adp-border-color: var(--border-color);
+            --adp-border-color-inner: var(--border-color);
+            --adp-border-radius: 8px;
+            --adp-day-name-color: var(--text-secondary);
+            --adp-cell-background-color-selected: var(--accent-primary);
+            --adp-cell-background-color-selected-hover: var(--accent-secondary);
+            --adp-cell-background-color-in-range: rgba(229, 9, 20, 0.1);
+            --adp-cell-background-color-in-range-hover: rgba(229, 9, 20, 0.2);
+            --adp-time-track-color: var(--border-color);
+            --adp-time-track-color-hover: var(--border-color);
+            --adp-time-thumb-color: var(--accent-primary);
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            .page {
+                padding: 20px;
+            }
+
+            .form__row {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .page__header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .theme-toggle {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div class="page">
+        <div class="page__header">
+            <h1 class="page__title">Register for Cineworld</h1>
+            <div class="theme-toggle" id="themeToggle">
+                <span class="theme-toggle__label">Dark theme</span>
+                <div class="theme-toggle__switch"></div>
+            </div>
+        </div>
+
+        <div class="form" id="registrationForm">
+            <div class="form__row">
+                <div class="form__field">
+                    <label class="form__label form__label--required" for="firstName">First Name</label>
+                    <div class="input">
+                        <input type="text" id="firstName" class="input__field" placeholder="Thomas">
+                        <button class="input__clear" type="button">×</button>
+                    </div>
+                    <div class="form__error">First Name must be at least 2 characters long without spaces</div>
+                </div>
+                <div class="form__field">
+                    <label class="form__label form__label--required" for="lastName">Last Name</label>
+                    <div class="input">
+                        <input type="text" id="lastName" class="input__field" placeholder="Edison">
+                        <button class="input__clear" type="button">×</button>
+                    </div>
+                    <div class="form__error">Last Name must be at least 2 characters long without spaces</div>
+                </div>
+            </div>
+
+            <div class="form__row">
+                <div class="form__field">
+                    <label class="form__label" for="dateOfBirth">Date of Birth</label>
+                    <div class="input">
+                        <input type="text" id="dateOfBirth" class="input__field" placeholder="DD.MM.YYYY" readonly>
+                        <button class="input__clear" type="button">×</button>
+                    </div>
+                </div>
+                <div class="form__field">
+                    <label class="form__label form__label--required" for="email">Email</label>
+                    <div class="input">
+                        <input type="email" id="email" class="input__field" placeholder="email@email.ru">
+                        <button class="input__clear" type="button">×</button>
+                    </div>
+                    <div class="form__error">Please enter a valid email address</div>
+                </div>
+            </div>
+
+            <div class="form__row">
+                <div class="form__field">
+                    <label class="form__label form__label--required" for="password">Password</label>
+                    <div class="input">
+                        <input type="password" id="password" class="input__field" placeholder="********">
+                        <button class="input__clear" type="button">×</button>
+                    </div>
+                    <div class="form__error">Password must be at least 6 characters long</div>
+                </div>
+                <div class="form__field">
+                    <label class="form__label form__label--required" for="repeatPassword">Repeat Password</label>
+                    <div class="input">
+                        <input type="password" id="repeatPassword" class="input__field" placeholder="********">
+                        <button class="input__clear" type="button">×</button>
+                    </div>
+                    <div class="form__error">Passwords do not match</div>
+                </div>
+            </div>
+
+            <div class="form__field">
+                <label class="form__label" for="favoriteGenre">Select your favourite genre</label>
+                <div class="select">
+                    <select id="favoriteGenre" class="select__field">
+                        <option value="" disabled selected>Favorite genre</option>
+                        <option value="action">Action</option>
+                        <option value="adventure">Adventure</option>
+                        <option value="comedy">Comedy</option>
+                        <option value="drama">Drama</option>
+                        <option value="fantasy">Fantasy</option>
+                        <option value="horror">Horror</option>
+                        <option value="sci-fi">Sci-Fi</option>
+                        <option value="thriller">Thriller</option>
+                    </select>
+                    <div class="select__arrow">▼</div>
+                </div>
+            </div>
+
+            <div class="form__field">
+                <label class="checkbox">
+                    <input type="checkbox" id="subscribe" class="checkbox__input">
+                    <div class="checkbox__box"></div>
+                    <span class="checkbox__label">Subscribe to the latest updates of site materials</span>
+                </label>
+            </div>
+
+            <div class="form__field">
+                <label class="checkbox">
+                    <input type="checkbox" id="terms" class="checkbox__input checkbox__input--required">
+                    <div class="checkbox__box"></div>
+                    <span class="checkbox__label checkbox__label--required">I accept the terms of the "Personal Data Processing Policy" and, for the purpose of establishing feedback with me, I consent to the processing of my personal data.</span>
+                </label>
+                <div class="form__error">You must accept the terms and conditions</div>
+            </div>
+
+            <div class="form__divider"></div>
+
+            <button type="submit" class="button" id="registerButton" disabled>REGISTER</button>
+        </div>
+
+        <div class="success" id="successMessage">
+            <h2 class="success__title">CineWorld</h2>
+            <p class="success__message">Thank you for registering on the CineWorld portal</p>
+            <button class="button" id="registerAgainButton">REGISTER AGAIN</button>
+        </div>
+    </div>
+
+    <div class="datepicker-overlay" id="datepickerOverlay">
+        <div class="datepicker-container" id="datepickerContainer"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.3.5/air-datepicker.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            // Check for saved theme preference or use light theme as default
+            const savedTheme = localStorage.getItem('cineworld-theme');
+            if (savedTheme === 'dark') {
+                body.classList.remove('theme-light');
+                body.classList.add('theme-dark');
+                themeToggle.classList.add('theme-toggle--active');
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                if (body.classList.contains('theme-light')) {
+                    body.classList.remove('theme-light');
+                    body.classList.add('theme-dark');
+                    themeToggle.classList.add('theme-toggle--active');
+                    localStorage.setItem('cineworld-theme', 'dark');
+                } else {
+                    body.classList.remove('theme-dark');
+                    body.classList.add('theme-light');
+                    themeToggle.classList.remove('theme-toggle--active');
+                    localStorage.setItem('cineworld-theme', 'light');
+                }
+            });
+
+            // Form elements
+            const registrationForm = document.getElementById('registrationForm');
+            const successMessage = document.getElementById('successMessage');
+            const registerButton = document.getElementById('registerButton');
+            const registerAgainButton = document.getElementById('registerAgainButton');
+            
+            // Input fields
+            const firstNameInput = document.getElementById('firstName');
+            const lastNameInput = document.getElementById('lastName');
+            const dateOfBirthInput = document.getElementById('dateOfBirth');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const repeatPasswordInput = document.getElementById('repeatPassword');
+            const favoriteGenreSelect = document.getElementById('favoriteGenre');
+            const subscribeCheckbox = document.getElementById('subscribe');
+            const termsCheckbox = document.getElementById('terms');
+            
+            // Datepicker
+            const datepickerOverlay = document.getElementById('datepickerOverlay');
+            const datepickerContainer = document.getElementById('datepickerContainer');
+            
+            // Initialize datepicker
+            const datepicker = new AirDatepicker(datepickerContainer, {
+                inline: false,
+                autoClose: true,
+                onSelect: function({date}) {
+                    if (date) {
+                        const formattedDate = formatDate(date);
+                        dateOfBirthInput.value = formattedDate;
+                        updateInputState(dateOfBirthInput);
+                    }
+                    closeDatepicker();
+                }
+            });
+            
+            // Open datepicker when clicking on date of birth field
+            dateOfBirthInput.addEventListener('click', function() {
+                openDatepicker();
+            });
+            
+            // Close datepicker when clicking on overlay
+            datepickerOverlay.addEventListener('click', function(e) {
+                if (e.target === datepickerOverlay) {
+                    closeDatepicker();
+                }
+            });
+            
+            // Clear input functionality
+            document.querySelectorAll('.input__clear').forEach(clearButton => {
+                clearButton.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.input__field');
+                    input.value = '';
+                    updateInputState(input);
+                    validateField(input);
+                    updateRegisterButton();
+                });
+            });
+            
+            // Input event listeners for validation
+            const requiredFields = [
+                firstNameInput, 
+                lastNameInput, 
+                emailInput, 
+                passwordInput, 
+                repeatPasswordInput
+            ];
+            
+            requiredFields.forEach(field => {
+                field.addEventListener('input', function() {
+                    updateInputState(this);
+                    validateField(this);
+                    updateRegisterButton();
+                });
+                
+                field.addEventListener('blur', function() {
+                    validateField(this);
+                    updateRegisterButton();
+                });
+            });
+            
+            // Checkbox event listeners
+            termsCheckbox.addEventListener('change', function() {
+                updateRegisterButton();
+            });
+            
+            // Form submission
+            registerButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Validate all fields
+                let formIsValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!validateField(field)) {
+                        formIsValid = false;
+                    }
+                });
+                
+                if (!termsCheckbox.checked) {
+                    formIsValid = false;
+                    termsCheckbox.parentElement.parentElement.classList.add('form__field--error');
+                } else {
+                    termsCheckbox.parentElement.parentElement.classList.remove('form__field--error');
+                }
+                
+                if (formIsValid) {
+                    // Show success message
+                    registrationForm.classList.add('form--hidden');
+                    successMessage.classList.add('success--visible');
+                } else {
+                    // Disable register button if form is invalid
+                    registerButton.disabled = true;
+                }
+            });
+            
+            // Register again button
+            registerAgainButton.addEventListener('click', function() {
+                // Reset form
+                registrationForm.reset();
+                document.querySelectorAll('.input').forEach(input => {
+                    input.classList.remove('input--filled');
+                });
+                document.querySelectorAll('.form__field').forEach(field => {
+                    field.classList.remove('form__field--error');
+                });
+                
+                // Show form again
+                registrationForm.classList.remove('form--hidden');
+                successMessage.classList.remove('success--visible');
+                
+                // Update register button state
+                updateRegisterButton();
+            });
+            
+            // Helper functions
+            function formatDate(date) {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}.${month}.${year}`;
+            }
+            
+            function openDatepicker() {
+                datepickerOverlay.classList.add('datepicker-overlay--visible');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeDatepicker() {
+                datepickerOverlay.classList.remove('datepicker-overlay--visible');
+                document.body.style.overflow = '';
+            }
+            
+            function updateInputState(input) {
+                const inputContainer = input.parentElement;
+                if (input.value.trim() !== '') {
+                    inputContainer.classList.add('input--filled');
+                } else {
+                    inputContainer.classList.remove('input--filled');
+                }
+            }
+            
+            function validateField(field) {
+                const fieldContainer = field.parentElement.parentElement;
+                let isValid = true;
+                
+                switch(field.id) {
+                    case 'firstName':
+                    case 'lastName':
+                        isValid = validateName(field.value);
+                        break;
+                    case 'email':
+                        isValid = validateEmail(field.value);
+                        break;
+                    case 'password':
+                        isValid = validatePassword(field.value);
+                        // Also validate repeat password if password changes
+                        if (repeatPasswordInput.value) {
+                            validateField(repeatPasswordInput);
+                        }
+                        break;
+                    case 'repeatPassword':
+                        isValid = validateRepeatPassword(field.value);
+                        break;
+                }
+                
+                if (!isValid && field.value.trim() !== '') {
+                    fieldContainer.classList.add('form__field--error');
+                    field.classList.add('input__field--error');
+                } else {
+                    fieldContainer.classList.remove('form__field--error');
+                    field.classList.remove('input__field--error');
+                }
+                
+                return isValid;
+            }
+            
+            function validateName(name) {
+                return name.length >= 2 && !/\s/.test(name);
+            }
+            
+            function validateEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+            
+            function validatePassword(password) {
+                return password.length >= 6;
+            }
+            
+            function validateRepeatPassword(password) {
+                return password === passwordInput.value;
+            }
+            
+            function updateRegisterButton() {
+                let allRequiredFieldsFilled = true;
+                
+                requiredFields.forEach(field => {
+                    if (field.value.trim() === '') {
+                        allRequiredFieldsFilled = false;
+                    }
+                });
+                
+                if (!termsCheckbox.checked) {
+                    allRequiredFieldsFilled = false;
+                }
+                
+                registerButton.disabled = !allRequiredFieldsFilled;
+            }
+            
+            // Initialize input states
+            document.querySelectorAll('.input__field').forEach(input => {
+                updateInputState(input);
+            });
+        });
+    </script>
+</body>
+</html>
